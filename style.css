@@ -24,14 +24,12 @@ body {
         radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
     color: var(--text-white);
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    /* Better for long content */
-    padding: 2rem 0;
-    overflow-y: auto;
-    overflow-x: hidden;
+    align-items: center;
+    overflow: hidden;
+    /* Prevent the big website scrollbar */
 }
 
 .container {
@@ -243,19 +241,20 @@ main {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    max-height: 550px;
-    overflow-y: auto;
+    height: 400px;
+    /* Fixed height to force internal scroll */
+    overflow-y: scroll;
+    /* Always show scroll path for clarity */
     overflow-x: hidden;
-    padding: 0.5rem 1rem 0.5rem 0;
-    /* Add padding for better spacing */
+    padding-right: 1rem;
     scrollbar-width: thin;
-    /* Firefox support */
-    scrollbar-color: var(--primary) transparent;
+    scrollbar-color: var(--primary) rgba(255, 255, 255, 0.05);
 }
 
 /* Custom Scrollbar */
 .task-list::-webkit-scrollbar {
     width: 6px;
+    display: block !important;
 }
 
 .task-list::-webkit-scrollbar-track {
