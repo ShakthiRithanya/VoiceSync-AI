@@ -27,7 +27,10 @@ body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    /* Better for long content */
+    padding: 2rem 0;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 
@@ -239,10 +242,15 @@ main {
 .task-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    max-height: 500px;
+    gap: 1.2rem;
+    max-height: 550px;
     overflow-y: auto;
-    padding-right: 0.5rem;
+    overflow-x: hidden;
+    padding: 0.5rem 1rem 0.5rem 0;
+    /* Add padding for better spacing */
+    scrollbar-width: thin;
+    /* Firefox support */
+    scrollbar-color: var(--primary) transparent;
 }
 
 /* Custom Scrollbar */
@@ -260,6 +268,8 @@ main {
 }
 
 .task-card {
+    flex-shrink: 0;
+    /* Prevent overlapping/squishing */
     background: var(--card-bg);
     border: 1px solid var(--glass-border);
     border-radius: 1.2rem;
@@ -267,7 +277,6 @@ main {
     transition: all 0.3s ease;
     animation: slideIn 0.5s ease-out;
     position: relative;
-    overflow: hidden;
 }
 
 .task-card::before {
