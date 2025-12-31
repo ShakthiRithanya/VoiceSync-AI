@@ -15,6 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize
     renderAllTasks();
 
+    // Register Service Worker for Background Notifications
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service Worker Registered', reg))
+            .catch(err => console.error('Service Worker Registration Failed', err));
+    }
+
     const notificationSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
 
     // 1. Digital Clock & PROACTIVE Reminder Loop
@@ -91,24 +98,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 4. Notification Engine (With Fallback Alert)
-    function showNotification(task) {
-        // 1. Browser Notification
+    async function showNotification(task) {
+        // 1. Browser Notification (Service Worker Based for Background Support)
         if (Notification.permission === 'granted') {
             try {
-                const n = new Notification('VoiceSync AI Task', {
-                    body: `${task.title} (${task.priority})`,
-                    icon: 'https://cdn-icons-png.flaticon.com/512/2098/2098402.png',
-                    tag: task.id,
-                    requireInteraction: true,
-                    silent: false // Try to force sound via system if possible
-                });
-                n.onclick = () => {
-                    window.focus();
-                    parent.focus();
-                    n.close();
-                };
+                if ('serviceWorker' in navigator) {
+                    const registration = await navigator.serviceWorker.ready;
+                    registration.showNotification('VoiceSync AI Task', {
+                        body: `${task.title} (Priority: ${task.priority})`,
+                        icon: 'https://cdn-icons-png.flaticon.com/512/2098/2098402.png',
+                        badge: 'https://cdn-icons-png.flaticon.com/512/2098/2098402.png', // Small icon for status bar
+                        tag: task.id,
+                        requireInteraction: true,
+                        vibrate: [200, 100, 200, 100, 200], // Mobile vibration pattern
+                        silent: false
+                    });
+                } else {
+                    new Notification('VoiceSync AI Task', {
+                        body: `${task.title} (${task.priority})`,
+                        icon: 'https://cdn-icons-png.flaticon.com/512/2098/2098402.png'
+                    });
+                }
             } catch (e) {
-                console.error("Browser notification failed", e);
+                console.error("Notification failed", e);
             }
         }
 
